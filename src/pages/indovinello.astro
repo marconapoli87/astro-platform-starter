@@ -1,0 +1,92 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="Sblocca il tuo sconto">
+    <section class="flex justify-center pb-16">
+        <div class="w-full max-w-xl p-6 text-white rounded-2xl shadow-2xl bg-[#15151c] border border-[#1f1f2a]">
+            <div class="flex items-center justify-between gap-2">
+                <h1 class="text-xl font-semibold">🎁 Sblocca il tuo sconto</h1>
+                <span class="px-3 py-1 text-xs font-semibold rounded-full bg-blue-500/20 text-blue-200 border border-blue-500/40">
+                    Indovinello
+                </span>
+            </div>
+            <p class="mt-3 text-sm text-[#cfcfd6]">Risolvi l’indovinello e ottieni il tuo codice.</p>
+
+            <div class="mt-5 text-lg leading-relaxed text-white">
+                Tom è alto un metro e ottanta, fa l’aiuto macellaio e indossa scarpe numero 45.<br />
+                <strong>Cosa pesa?</strong>
+            </div>
+
+            <label class="block mt-6 space-y-3" for="answer">
+                <span class="text-sm text-[#cfcfd6]">Inserisci la risposta</span>
+                <input
+                    id="answer"
+                    type="text"
+                    placeholder="Scrivi la risposta…"
+                    autocomplete="off"
+                    class="w-full px-4 py-3 text-base text-white rounded-xl border border-[#2a2a38] bg-[#0e0e11] focus:border-blue-500 focus:outline-none"
+                />
+            </label>
+
+            <button
+                id="checkBtn"
+                type="button"
+                class="w-full px-4 py-3 mt-4 text-base font-bold text-white transition rounded-xl bg-[#4f7cff] hover:bg-[#3f6cf0] disabled:opacity-60 disabled:cursor-not-allowed"
+            >
+                Verifica
+            </button>
+
+            <div id="message" class="mt-4 min-h-[24px] text-sm"></div>
+
+            <div id="reward" class="hidden mt-5 space-y-3 p-4 rounded-xl border border-[#2a2a38] bg-[#0e0e11]">
+                <div class="text-[#7CFF8D] font-semibold">✅ Corretto!</div>
+                <p class="text-sm text-[#cfcfd6]">Ecco il tuo codice sconto:</p>
+                <div id="coupon" class="text-center text-xl tracking-wide px-4 py-2 rounded-lg bg-[#15151c]">ESCAPE-10</div>
+                <p class="text-xs text-center text-[#9a9aa6]">Usalo entro 7 giorni per la tua prossima esperienza.</p>
+            </div>
+        </div>
+    </section>
+</Layout>
+
+<script is:inline>
+    const correctAnswers = ['CARNE', 'LACARNE', 'CARNEALBANCO'];
+
+    const input = document.getElementById('answer');
+    const button = document.getElementById('checkBtn');
+    const message = document.getElementById('message');
+    const reward = document.getElementById('reward');
+
+    button?.addEventListener('click', checkAnswer);
+    input?.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter') {
+            checkAnswer();
+        }
+    });
+
+    function normalize(text) {
+        return text
+            .toUpperCase()
+            .replace(/\s+/g, '')
+            .replace(/[ÀÁÂÄ]/g, 'A')
+            .replace(/[ÈÉÊË]/g, 'E')
+            .replace(/[ÌÍÎÏ]/g, 'I')
+            .replace(/[ÒÓÔÖ]/g, 'O')
+            .replace(/[ÙÚÛÜ]/g, 'U');
+    }
+
+    function checkAnswer() {
+        const userAnswer = normalize(input?.value ?? '');
+
+        if (correctAnswers.includes(userAnswer)) {
+            message.textContent = 'Risposta esatta.';
+            message.className = 'mt-4 min-h-[24px] text-sm text-[#7CFF8D]';
+            reward.classList.remove('hidden');
+            input.disabled = true;
+            button.disabled = true;
+        } else {
+            message.textContent = 'Risposta sbagliata. Riprova.';
+            message.className = 'mt-4 min-h-[24px] text-sm text-[#ff6b6b]';
+        }
+    }
+</script>
